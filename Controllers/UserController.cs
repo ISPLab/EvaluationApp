@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc;
+
 namespace App;
 
 [ApiController]
@@ -14,7 +16,8 @@ public class UserController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<User>>> GetUsers()
     {
-        return await _userService.GetUsers();
+        var users = await _userService.GetUsers();
+        return Ok(users);
     }
 
     [HttpGet("{id}")]
@@ -57,31 +60,32 @@ public class UserActivityController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserActivity>>> GetUserActivities()
     {
-        return await _userActivityService.GetUserActivities();
+        var res = await _userActivityService.GetUserActivitiesAsync();
+        return Ok(res);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<UserActivity>> GetUserActivity(int id)
     {
-        return await _userActivityService.GetUserActivity(id);
+        return await _userActivityService.GetUserActivityAsync(id);
     }
 
     [HttpPost]
     public async Task<ActionResult<UserActivity>> CreateUserActivity(UserActivity userActivity)
     {
-        return await _userActivityService.CreateUserActivity(userActivity);
+        return await _userActivityService.CreateUserActivityAsync(userActivity);
     }
 
     [HttpPut("{id}")]
     public async Task<ActionResult<UserActivity>> UpdateUserActivity(int id, UserActivity userActivity)
     {
-        return await _userActivityService.UpdateUserActivity(id, userActivity);
+        return await _userActivityService.UpdateUserActivityAsync(id, userActivity);
     }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteUserActivity(int id)
     {
-        await _userActivityService.DeleteUserActivity(id);
+        await _userActivityService.DeleteUserActivityAsync(id);
         return NoContent();
     }
 }

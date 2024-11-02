@@ -1,0 +1,11 @@
+version: '3'
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: Giraffe#LemonTree88
+      MSSQL_PID: Evaluation
+      MSSQL_SA_ENABLE: 1
+    ports:
+      - "1433:1433"
