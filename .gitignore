@@ -1,0 +1,39 @@
+# Ignore Visual Studio files
+.vs/
+.vscode/
+*.suo
+*.ntvs*
+*.nupkg
+*.vspscc
+
+# Ignore .NET Core files
+obj/
+bin/
+Debug/
+Release/
+*.csproj.nuget.cache
+*.csproj.nuget.g.props
+*.csproj.nuget.g.targets
+
+# Ignore NuGet packages
+packages/
+
+# Ignore build output
+*.dll
+*.exe
+*.pdb
+*.xml
+
+# Ignore .NET Core SDK files
+.dotnet/
+.dotnetcore/
+
+# Ignore other files
+*.user
+*.userosscache
+*.sln.docstates
+
+# Ignore specific files
+App.config
+Web.config
+packages.config
