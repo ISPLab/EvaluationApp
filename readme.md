@@ -37,6 +37,34 @@ CREATE TABLE UserActivity (
 );
 
 
+CREATE TYPE UsersTableType AS TABLE
+(
+    Id INT,
+    IsActive BIT
+);
+
+USE evalution;
+GO
+CREATE PROCEDURE UpdateUsersBulk
+    @Users UsersTableType READONLY
+AS
+BEGIN
+    UPDATE u
+    SET u.IsActive = us.IsActive
+    FROM Users u
+    INNER JOIN @Users us ON u.Id = us.Id
+END
+
+
+
 3. run 
  dotnet watch run --project EvaluationApp.csproj --build Debug --launch EvaluationApp.dll
+
+
+
+
+
+
+
+
 

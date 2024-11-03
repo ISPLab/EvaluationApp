@@ -20,7 +20,7 @@ public class UsersController : ControllerBase
         Console.WriteLine("Updating users..." + userString);
         try
         {
-            await _userService.UpdateUsers(users);
+            await _userService.UpdateUsersWithStoredProc(users);
             Console.WriteLine("Users updated successfully");
             return Ok();
         }

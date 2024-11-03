@@ -1,3 +1,5 @@
+using System.Data;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace App;
@@ -11,16 +13,18 @@ public interface IUserService
     Task<User> UpdateUser(int id, User user);
     Task DeleteUser(int id);
     Task UpdateUsers(List<User> users);
+    Task UpdateUsersWithStoredProc(List<User> users);
 }
 
 
 public class UserService : IUserService
 {
     private readonly AppDbContext _context;
-
-    public UserService(AppDbContext context)
+    private readonly IConfiguration _configuration;
+    public UserService(AppDbContext context,IConfiguration configuration)
     {
         _context = context;
+        _configuration = configuration;
     }
 
     public async Task<IEnumerable<User>> GetUsers()
@@ -55,7 +59,26 @@ public class UserService : IUserService
         _context.Users.UpdateRange(users);
         await _context.SaveChangesAsync();
     }
+    public async Task UpdateUsersWithStoredProc(List<User> users)
+{
+    var table = new DataTable();
+    table.Columns.Add("Id", typeof(int));
+    table.Columns.Add("IsActive", typeof(bool));
 
+    foreach (var user in users)
+    {
+        table.Rows.Add(user.Id, user.IsActive);
+    }
+
+    var parameter = new SqlParameter("@Users", SqlDbType.Structured)
+    {
+        TypeName = "UsersTableType", 
+        Value = table
+    };
+
+    await _context.Database.ExecuteSqlRawAsync("EXEC UpdateUsersBulk @Users", parameter);
+
+}
 
     public async Task DeleteUser(int id)
     {

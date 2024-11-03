@@ -10,6 +10,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserActivityService, UserActivityService>();
+var configuration = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json")
+    .AddEnvironmentVariables()
+    .Build();
+builder.Services.AddSingleton<IConfiguration>(configuration);
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
