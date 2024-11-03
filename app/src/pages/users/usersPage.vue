@@ -2,69 +2,74 @@
   <div class="admin-page">
     <h1 class="title">Users Administration Page</h1>
     <div v-if="modifiedUsers.length > 0" class="notification-panel">
-  <span class="notification-message">One or more users have been modified.</span>
-  <button @click="saveModifiedUsers" class="save-button">Save Changes</button>
-</div>
+      <span class="notification-message">One or more users have been modified.</span>
+      <button @click="saveModifiedUsers" class="save-button">Save Changes</button>
+    </div>
+    <div v-if="message" class="notification-panel">
+      <span class="notification-message">One or more users have been modified.</span>
+      <button @click="message = ''" class="save-button">Ok</button>
+    </div>
     <table class="users-table">
       <tr>
         <th>Username</th>
         <th>Status</th>
       </tr>
-      <tr v-for="user in users" :key="user.id" class="user-row" @click="showUserPanel(user)" >
+      <tr v-for="user in users" :key="user.id" class="user-row" @click="showUserPanel(user)">
         <td class="username">{{ user.username }}</td>
-        <td class="status">{{ user.active ? 'Active' : 'Inactive' }}</td>
+        <td class="status">{{ user.isActive ? 'Active' : 'Inactive' }}</td>
       </tr>
     </table>
     <div v-if="showPanel" class="user-panel">
       <span class="username-label">Username: {{ selectedUser.username }}</span>
       <div class="status-checkbox">
-        <input type="checkbox" v-model="selectedUser.active" id="active" />
+        <input type="checkbox" v-model="selectedUser.isActive" id="active" />
         <label for="active">Active</label>
       </div>
-      <button @click="saveChanges" class="save-button">Save Changes</button>
-    </div>    
+      <button @click="saveChanges" class="save-button">Ok</button>
+    </div>
   </div>
 
 </template>
 
 <script>
 import { ref, reactive } from 'vue';
-
+import userService from './users.service';
 export default {
   setup() {
-    const users = reactive([
-      { id: 1, username: 'someuser1', active: true },
-      { id: 2, username: 'someuser2', active: false },
-      // ...
-    ]);
-
+    const users = reactive([]);
     const showPanel = ref(false);
     const selectedUser = ref(null);
     const modifiedUsers = ref([]);
+    const message = ref('');
     const showUserPanel = (user) => {
       showPanel.value = true;
       selectedUser.value = user;
     };
 
+    const getUsers = async () => {
+      const response = await userService.getUsers();
+      users.push(...response);
+    }
+    getUsers();
+
     const saveChanges = () => {
-      // один из следующих сценариев (на усмотрение кандидата)
-      // 1. Обновление данных пользователя в базе данных
-      // 2. Отправка запроса на сервер для обновления данных пользователя
-      // 3. Вывод сообщения об успешном обновлении данных пользователя
-      console.log('User profile updated');
       addModifiedUser(selectedUser.value);
       showPanel.value = false;
     };
 
-    const addModifiedUser =(user) => {
-      // ...
+    const addModifiedUser = (user) => {
       modifiedUsers.value.push(user);
     };
-    const saveModifiedUsers = () => {
-      // ...
-      modifiedUsers.value = [];
+    const saveModifiedUsers = async () => {
+      console.log('Saving modified users....');
+      await userService.updateUsers(modifiedUsers.value).then(() => {
+        message.value = 'Changes have been saved';
+        modifiedUsers.value = [];
+      }).catch((error) => {
+        console.log(error);
+        message.value = 'Changes have not been saved. See error';
+      });
     }
-
     return {
       users,
       showPanel,
@@ -154,11 +159,13 @@ export default {
 .status-checkbox {
   margin-bottom: 20px;
 }
-.status-checkbox > * {
+
+.status-checkbox>* {
   margin: 10px;
 }
 
 .save-button {
+  float: right;
   background-color: #4CAF50;
   color: #fff;
   padding: 10px 20px;

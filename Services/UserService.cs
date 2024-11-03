@@ -10,6 +10,7 @@ public interface IUserService
     Task<User> CreateUser(User user);
     Task<User> UpdateUser(int id, User user);
     Task DeleteUser(int id);
+    Task UpdateUsers(List<User> users);
 }
 
 
@@ -49,6 +50,12 @@ public class UserService : IUserService
         }
         return existingUser;
     }
+    public async Task UpdateUsers(List<User> users)
+    {
+        _context.Users.UpdateRange(users);
+        await _context.SaveChangesAsync();
+    }
+
 
     public async Task DeleteUser(int id)
     {
