@@ -37,3 +37,6 @@ CREATE TABLE UserActivity (
 );
 
 
+3. run 
+ dotnet watch run --project EvaluationApp.csproj --build Debug --launch EvaluationApp.dll
+
