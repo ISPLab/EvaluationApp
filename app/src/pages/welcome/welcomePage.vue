@@ -3,8 +3,7 @@
       <h1 class="title">Welcome, {{ username }}!</h1>
       <p class="description">This page is for authenticated users only.</p>
       <div class="actions">
-        <router-link :to="{ name: 'users' }" class="button">Users</router-link>
-        <button @click="goToUsers" class="button">Go to Users</button>
+           <button @click="goToUsers" class="button">Go to Users</button>
       </div>
     </div>
   </template>

@@ -1,13 +1,17 @@
 <template>
   <div class="admin-page">
     <h1 class="title">Users Administration Page</h1>
+    <div v-if="modifiedUsers.length > 0" class="notification-panel">
+  <span class="notification-message">One or more users have been modified.</span>
+  <button @click="saveModifiedUsers" class="save-button">Save Changes</button>
+</div>
     <table class="users-table">
       <tr>
         <th>Username</th>
         <th>Status</th>
       </tr>
-      <tr v-for="user in users" :key="user.id" class="user-row">
-        <td @click="showUserPanel(user)" class="username">{{ user.username }}</td>
+      <tr v-for="user in users" :key="user.id" class="user-row" @click="showUserPanel(user)" >
+        <td class="username">{{ user.username }}</td>
         <td class="status">{{ user.active ? 'Active' : 'Inactive' }}</td>
       </tr>
     </table>
@@ -18,8 +22,9 @@
         <label for="active">Active</label>
       </div>
       <button @click="saveChanges" class="save-button">Save Changes</button>
-    </div>
+    </div>    
   </div>
+
 </template>
 
 <script>
@@ -35,7 +40,7 @@ export default {
 
     const showPanel = ref(false);
     const selectedUser = ref(null);
-
+    const modifiedUsers = ref([]);
     const showUserPanel = (user) => {
       showPanel.value = true;
       selectedUser.value = user;
@@ -46,9 +51,19 @@ export default {
       // 1. Обновление данных пользователя в базе данных
       // 2. Отправка запроса на сервер для обновления данных пользователя
       // 3. Вывод сообщения об успешном обновлении данных пользователя
-      console.log('Данные пользователя обновлены');
+      console.log('User profile updated');
+      addModifiedUser(selectedUser.value);
       showPanel.value = false;
     };
+
+    const addModifiedUser =(user) => {
+      // ...
+      modifiedUsers.value.push(user);
+    };
+    const saveModifiedUsers = () => {
+      // ...
+      modifiedUsers.value = [];
+    }
 
     return {
       users,
@@ -56,6 +71,8 @@ export default {
       selectedUser,
       showUserPanel,
       saveChanges,
+      modifiedUsers,
+      saveModifiedUsers
     };
   },
 };
@@ -139,6 +156,39 @@ export default {
 }
 .status-checkbox > * {
   margin: 10px;
+}
+
+.save-button {
+  background-color: #4CAF50;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.save-button:hover {
+  background-color: #3e8e41;
+}
+
+.notification-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: #f7f7f7;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  z-index: 1000;
+}
+
+.notification-message {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
 }
 
 .save-button {

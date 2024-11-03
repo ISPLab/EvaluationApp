@@ -1,18 +1,22 @@
 <template>
-    <div>
-        <h1>Login</h1>
-        <form @submit.prevent="login">
-            <label>Username:</label>
-            <input type="text" v-model="username" />
-            <br />
-            <label>Password:</label>
-            <input type="password" v-model="password" />
-            <br />
-            <button type="submit">Submit</button>
-            <div v-if="error" style="color: red">{{ error }}</div>
-        </form>
+    <div class="login-page">
+      <h1 class="title">Login</h1>
+      <form @submit.prevent="login" class="login-form">
+        <div class="form-group">
+          <label for="username" class="label">Username:</label>
+          <input type="text" v-model="username" id="username" class="input" />
+        </div>
+        <div class="form-group">
+          <label for="password" class="label">Password:</label>
+          <input type="password" v-model="password" id="password" class="input" />
+        </div>
+        <button type="submit" class="submit-button">Submit</button>
+        <div v-if="error" class="error-message">{{ error }}</div>
+      </form>
     </div>
-</template>
+  </template>
+  
+
 
 <script>
 import store from '../../store';
@@ -51,3 +55,63 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.login-page {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.label {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.submit-button {
+  background-color: #4CAF50;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #3e8e41;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
+</style>
