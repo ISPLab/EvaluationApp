@@ -20,6 +20,7 @@
 
 <script>
 import store from '../../store';
+import userService from '../../services/users.service';
 export default {
     data() {
         return {
@@ -29,15 +30,10 @@ export default {
         }
     },
     methods: {
-        login() {
+        async login  () {
             // Call API to authenticate user
             // For demonstration purposes, we'll use a mock API
-            const users = [
-                { username: 'john', password: 'hello', active: true },
-                { username: 'jane', password: 'world', active: false },
-                { username: 'user', password: 'pass', active: true },
-            ]
-            const user = users.find((u) => u.password === this.password)
+           const user =  await userService.login(this.username, this.password);
             if (user && user.active) {
                 // Login successful, redirect to /welcome
                 store.commit('SET_AUTH', {

@@ -1,6 +1,6 @@
 // api.service.spec.js
 import axios from 'axios';
-import userService from './users.service';
+import userService from '../../services/users.service';
 
 jest.mock('axios');
 
@@ -16,7 +16,7 @@ describe('userService', () => {
  
       axios.get.mockResolvedValue({ data: user });
 
-      
+
       const result = await userService.getUsers();
       result.find((u) => u.username === `someuser1`);
       expect(result).indcludes(user);

@@ -10,17 +10,42 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserActivityService, UserActivityService>();
+builder.Services.AddCors(options =>
+    {
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyMethod()
+                   .AllowAnyHeader()
+                   .AllowAnyOrigin();
+        });
+    });
+
 var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")
     .AddEnvironmentVariables()
     .Build();
 builder.Services.AddSingleton<IConfiguration>(configuration);
+builder.Services.AddScoped<IUserManager<User>,UserManagerFake>();
+
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultScheme = "Cookies";
+        options.DefaultChallengeScheme = "Cookies";
+    })
+    .AddCookie("Cookies", options =>
+    {
+        options.LoginPath = "/login";
+        options.LogoutPath = "/logout";
+    });
+
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 var app = builder.Build();
 
@@ -33,6 +58,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
+  app.UseAuthentication();
 app.MapControllers();
 
 

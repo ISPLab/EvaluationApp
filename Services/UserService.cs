@@ -75,9 +75,7 @@ public class UserService : IUserService
         TypeName = "UsersTableType", 
         Value = table
     };
-
     await _context.Database.ExecuteSqlRawAsync("EXEC UpdateUsersBulk @Users", parameter);
-
 }
 
     public async Task DeleteUser(int id)

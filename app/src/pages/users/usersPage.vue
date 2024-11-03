@@ -33,7 +33,7 @@
 
 <script>
 import { ref, reactive } from 'vue';
-import userService from './users.service';
+import userService from '../../services/users.service';
 export default {
   setup() {
     const users = reactive([]);

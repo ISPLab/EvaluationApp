@@ -6,6 +6,20 @@ const api = axios.create({
 });
 
 const userService = {
+
+  async login(username, password) {
+    try {
+      const response = await this.$axios.post('/login', {
+        username: username,
+        password: password
+      })
+      console.log(response.data)
+    } catch (error) {
+      console.error(error)
+    }
+  },  
+
+
   async getUsers() {
     try {
       console.log('getUsers');
