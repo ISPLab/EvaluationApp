@@ -37,7 +37,7 @@ namespace MyApplication.Controllers
             }
 
             var token = await _userManager.GenerateUserTokenAsync(user, "Default", "access_token");
-            return Ok(new { token });
+            return Ok( user );
         }
 
         [HttpPost("logout")]

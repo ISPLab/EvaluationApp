@@ -3,7 +3,7 @@ import UsersPage from './pages/users/usersPage.vue';
 import LoginPage from './pages/login/loginPage';
 import { createMemoryHistory, createRouter } from 'vue-router'
 
-//import store from './store';
+import store from './store';
 
 const routes = [
       {
@@ -31,7 +31,7 @@ const routes = [
       },
       {
         path: '/',
-        redirect: '/users',
+        redirect: '/welcome',
       },
     ];
 
@@ -40,7 +40,7 @@ const routes = [
     routes,
   })
 
-/*  router.beforeEach((to, from, next) => {
+ router.beforeEach((to, from, next) => {
     if (to.meta.requiresAuth && !store.state.auth.isAuthenticated) {
       next({ name: 'login' });
     } else if (to.meta.requiresActive && !store.state.auth.isActive) {
@@ -50,6 +50,6 @@ const routes = [
     } else {
       next();
     }
-  });*/
+  });
 
 export default router;

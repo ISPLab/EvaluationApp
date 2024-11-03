@@ -9,11 +9,12 @@ const userService = {
 
   async login(username, password) {
     try {
-      const response = await this.$axios.post('/login', {
+      const response = await api.post('/login', {
         username: username,
         password: password
       })
       console.log(response.data)
+      return response.data;
     } catch (error) {
       console.error(error)
     }

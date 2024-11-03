@@ -30,23 +30,27 @@ export default {
         }
     },
     methods: {
-        async login  () {
+         login  () {
             // Call API to authenticate user
             // For demonstration purposes, we'll use a mock API
-           const user =  await userService.login(this.username, this.password);
-            if (user && user.active) {
+          userService.login(this.username, this.password).then((user) => {
+            console.log("login",user)
+            if (user && user.isActive) {
+                console.log("login isActive",user) 
                 // Login successful, redirect to /welcome
                 store.commit('SET_AUTH', {
                     isAuthenticated: true,
-                    isActive: true,
-                    username: this.username
+                    isActive: user.isActive,
+                    username: user.username
                 });
                 this.$router.push('/welcome')
+                console.log("login store",store)
             } else {
                 // Login failed, show error message
                 this.error = 'We could not log you in. Please check your username/password and try again.'
                 this.password = ''
             }
+           });  
         }
     }
 }
