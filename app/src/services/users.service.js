@@ -24,7 +24,7 @@ const userService = {
   async getUsers() {
     try {
       console.log('getUsers');
-      const response = await api.get('/user');
+      const response = await api.get('/users');
       return response.data;
     } catch (error) {
       console.error(error);

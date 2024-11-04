@@ -21,7 +21,7 @@ public class UserService : IUserService
 {
     private readonly AppDbContext _context;
     private readonly IConfiguration _configuration;
-    public UserService(AppDbContext context,IConfiguration configuration)
+    public UserService(AppDbContext context, IConfiguration configuration)
     {
         _context = context;
         _configuration = configuration;
@@ -60,23 +60,23 @@ public class UserService : IUserService
         await _context.SaveChangesAsync();
     }
     public async Task UpdateUsersWithStoredProc(List<User> users)
-{
-    var table = new DataTable();
-    table.Columns.Add("Id", typeof(int));
-    table.Columns.Add("IsActive", typeof(bool));
-
-    foreach (var user in users)
     {
-        table.Rows.Add(user.Id, true);//user.IsActive);
+        var table = new DataTable();
+        table.Columns.Add("Id", typeof(int));
+        table.Columns.Add("IsActive", typeof(bool));
+
+        foreach (var user in users)
+        {
+            table.Rows.Add(user.Id, true);//user.IsActive);
+        }
+
+        var parameter = new SqlParameter("@Users", SqlDbType.Structured)
+        {
+            TypeName = "UsersTableType",
+            Value = table
+        };
+        await _context.Database.ExecuteSqlRawAsync("EXEC UpdateUsersBulk @Users", parameter);
     }
-
-    var parameter = new SqlParameter("@Users", SqlDbType.Structured)
-    {
-        TypeName = "UsersTableType", 
-        Value = table
-    };
-    await _context.Database.ExecuteSqlRawAsync("EXEC UpdateUsersBulk @Users", parameter);
-}
 
     public async Task DeleteUser(int id)
     {
