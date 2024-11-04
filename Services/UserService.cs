@@ -67,7 +67,7 @@ public class UserService : IUserService
 
     foreach (var user in users)
     {
-        table.Rows.Add(user.Id, user.IsActive);
+        table.Rows.Add(user.Id, true);//user.IsActive);
     }
 
     var parameter = new SqlParameter("@Users", SqlDbType.Structured)
