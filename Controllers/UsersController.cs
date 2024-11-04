@@ -16,7 +16,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> UpdateUsers(List<User> users)
+    public async Task<ActionResult> UpdateUsers(List<UserDto> users)
     {
         var userString = string.Join(", ", users.Select(u => u.Username));
         Console.WriteLine("Updating users..." + userString);
@@ -50,10 +50,10 @@ public class UsersController : ControllerBase
             {
                 Id = u.Id,
                 Username = u.Username,
-                IsActive = activities.Any(a => a.UserId == u.Id)
+                IsActive = activities.FirstOrDefault(a => a.UserId == u.Id)?.IsActive ?? false
             }).ToList();
-
-            Console.WriteLine("get user successfully");
+           Console.WriteLine("userDtos with details" + userDtos.Count() + " " + userDtos[1].Username + " " + userDtos[1].IsActive);
+           Console.WriteLine("get users successfully" + userDtos.Count());
             return Ok(userDtos);
         }
         catch (Exception ex)

@@ -36,6 +36,7 @@ CREATE TABLE UserActivity (
     CONSTRAINT FK_UserActivity_Users FOREIGN KEY (UserId) REFERENCES Users(Id)
 );
 
+4. add table type and prcedure  UpdateUserActivitiesBulk 
 
 CREATE TYPE UsersTableType AS TABLE
 (
@@ -45,15 +46,16 @@ CREATE TYPE UsersTableType AS TABLE
 
 USE evalution;
 GO
-CREATE PROCEDURE UpdateUsersBulk
+CREATE PROCEDURE UpdateUserActivitiesBulk
     @Users UsersTableType READONLY
 AS
 BEGIN
     UPDATE u
     SET u.IsActive = us.IsActive
-    FROM Users u
+    FROM UserActivities u
     INNER JOIN @Users us ON u.Id = us.Id
 END
+
 
 
 

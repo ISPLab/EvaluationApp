@@ -1,4 +1,5 @@
 using System.Data;
+using System.Diagnostics;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +14,7 @@ public interface IUserService
     Task<User> UpdateUser(int id, User user);
     Task DeleteUser(int id);
     Task UpdateUsers(List<User> users);
-    Task UpdateUsersWithStoredProc(List<User> users);
+    Task UpdateUsersWithStoredProc(List<UserDto> users);
 }
 
 
@@ -54,12 +55,8 @@ public class UserService : IUserService
         }
         return existingUser;
     }
-    public async Task UpdateUsers(List<User> users)
-    {
-        _context.Users.UpdateRange(users);
-        await _context.SaveChangesAsync();
-    }
-    public async Task UpdateUsersWithStoredProc(List<User> users)
+
+    public async Task UpdateUsersWithStoredProc(List<UserDto> users)
     {
         var table = new DataTable();
         table.Columns.Add("Id", typeof(int));
@@ -67,7 +64,7 @@ public class UserService : IUserService
 
         foreach (var user in users)
         {
-            table.Rows.Add(user.Id, true);//user.IsActive);
+            table.Rows.Add(user.Id, user.IsActive);
         }
 
         var parameter = new SqlParameter("@Users", SqlDbType.Structured)
@@ -75,7 +72,30 @@ public class UserService : IUserService
             TypeName = "UsersTableType",
             Value = table
         };
-        await _context.Database.ExecuteSqlRawAsync("EXEC UpdateUsersBulk @Users", parameter);
+
+        Console.WriteLine("Calling stored procedure UpdateUserActivitiesBulk...");
+        var sw = new Stopwatch();
+        sw.Start();
+        await _context.Database.ExecuteSqlRawAsync("EXEC UpdateUserActivitiesBulk @Users", parameter);
+        sw.Stop();
+        Console.WriteLine($"Stored procedure UpdateUserActivitiesBulk completed in {sw.ElapsedMilliseconds}ms");
+    }
+    
+    public async Task UpdateUsers(List<User> users)
+    {
+        Console.WriteLine("Starting UpdateUsers method...");
+        try
+        {
+            _context.Users.UpdateRange(users);
+            Console.WriteLine("Users updated in context, saving changes...");
+            await _context.SaveChangesAsync();
+            Console.WriteLine("Users updated successfully.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in UpdateUsers: {ex.Message}");
+            throw;
+        }
     }
 
     public async Task DeleteUser(int id)
