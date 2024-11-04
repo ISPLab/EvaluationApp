@@ -1,5 +1,6 @@
-Backend (ASP.NET Core)
+Evaluation App 
 
+Backend (ASP.NET Core)
 The project uses ASP.NET Core as the backend framework.
 It has a database ( likely SQL Server) with two tables: Users and UserActivity.
 The Users table has columns for Id, Username, and possibly other fields.
