@@ -1,4 +1,29 @@
-1. run project
+Backend (ASP.NET Core)
+
+The project uses ASP.NET Core as the backend framework.
+It has a database ( likely SQL Server) with two tables: Users and UserActivity.
+The Users table has columns for Id, Username, and possibly other fields.
+The UserActivity table has columns for Id, UserId (foreign key referencing the Users table), IsActive, and UpdatedAt.
+There is a stored procedure UpdateUserActivitiesBulk that updates the UserActivity table in bulk.
+The backend has services for user management (_userService) and user activity management (_userActivityService).
+The services are used to retrieve users and user activities from the database.
+Frontend (Vue.js)
+
+The project uses Vue.js as the frontend framework.
+The frontend has a WelcomePage component that displays a welcome message to authenticated users.
+The project uses Vuex for state management and Vue Router for client-side routing.
+API
+
+The backend exposes an API that returns a list of users with their corresponding user activities.
+The API is likely used by the frontend to retrieve data and display it to the user.
+Database Setup
+
+The project uses a docker-compose file to set up a database container.
+The database is created using a SQL script that creates the Users and UserActivity tables, as well as the UpdateUserActivitiesBulk stored procedure.
+Overall, this project appears to be a simple web application that manages user data and user activities, with a backend API and a frontend UI built using Vue.js.
+
+Setup
+1. run project mssql
     docker-compose up
 
 2. run script for creating database
@@ -24,11 +49,9 @@ GO
 CREATE TABLE Users (
     Id INT PRIMARY KEY IDENTITY(1,1),
     Username NVARCHAR(50) NOT NULL,
-    Password NVARCHAR(50) NOT NULL,
-    IsActive BIT NOT NULL DEFAULT 1
 );
 
-CREATE TABLE UserActivity (
+CREATE TABLE UserActivities (
     Id INT PRIMARY KEY IDENTITY(1,1),
     UserId INT NOT NULL,
     IsActive BIT NOT NULL,
@@ -61,6 +84,7 @@ END
 
 3. run 
  dotnet watch run --project EvaluationApp.csproj --build Debug --launch EvaluationApp.dll
+ cd app  @@ npm run serve
 
 
 

@@ -14,7 +14,7 @@ public interface IUserService
     Task<User> UpdateUser(int id, User user);
     Task DeleteUser(int id);
     Task UpdateUsers(List<User> users);
-    Task UpdateUsersWithStoredProc(List<UserDto> users);
+    Task UpdateUsersActivitiesWithStoredProc(List<UserDto> users);
 }
 
 
@@ -56,29 +56,29 @@ public class UserService : IUserService
         return existingUser;
     }
 
-    public async Task UpdateUsersWithStoredProc(List<UserDto> users)
+    public async Task UpdateUsersActivitiesWithStoredProc(List<UserDto> users)
     {
-        var table = new DataTable();
-        table.Columns.Add("Id", typeof(int));
-        table.Columns.Add("IsActive", typeof(bool));
+        var userTable = new DataTable
+        {
+            Columns =
+            {
+                { "Id", typeof(int) },
+                { "IsActive", typeof(bool) }
+            }
+        };
 
         foreach (var user in users)
         {
-            table.Rows.Add(user.Id, user.IsActive);
+            userTable.Rows.Add(user.Id, user.IsActive);
         }
 
-        var parameter = new SqlParameter("@Users", SqlDbType.Structured)
+        var userParameter = new SqlParameter("@Users", SqlDbType.Structured)
         {
             TypeName = "UsersTableType",
-            Value = table
+            Value = userTable
         };
 
-        Console.WriteLine("Calling stored procedure UpdateUserActivitiesBulk...");
-        var sw = new Stopwatch();
-        sw.Start();
-        await _context.Database.ExecuteSqlRawAsync("EXEC UpdateUserActivitiesBulk @Users", parameter);
-        sw.Stop();
-        Console.WriteLine($"Stored procedure UpdateUserActivitiesBulk completed in {sw.ElapsedMilliseconds}ms");
+        await _context.Database.ExecuteSqlRawAsync("EXEC UpdateUserActivitiesBulk @Users", userParameter);
     }
     
     public async Task UpdateUsers(List<User> users)

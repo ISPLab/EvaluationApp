@@ -39,15 +39,15 @@ public class UserActivityService : IUserActivityService
         return userActivity;
     }
 
-    public async Task<UserActivity> UpdateUserActivityAsync(int id, UserActivity userActivity)
+    public async Task<UserActivity> UpdateUserActivityAsync(int id, UserActivity updatedUserActivity)
     {
-        var existingUserActivity = await _context.UserActivities.FindAsync(id);
-        if (existingUserActivity != null)
+        var existingActivity = await _context.UserActivities.FindAsync(id);
+        if (existingActivity != null)
         {
-            _context.Entry(existingUserActivity).CurrentValues.SetValues(userActivity);
+            _context.Entry(existingActivity).CurrentValues.SetValues(updatedUserActivity);
             await _context.SaveChangesAsync();
         }
-        return existingUserActivity;
+        return existingActivity;
     }
 
     public async Task DeleteUserActivityAsync(int id)

@@ -16,49 +16,37 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> UpdateUsers(List<UserDto> users)
+    public async Task<ActionResult> UpdateUsers(List<UserDto> userDtos)
     {
-        var userString = string.Join(", ", users.Select(u => u.Username));
-        Console.WriteLine("Updating users..." + userString);
         try
         {
-            await _userService.UpdateUsersWithStoredProc(users);
-            Console.WriteLine("Users updated successfully");
+            await _userService.UpdateUsersActivitiesWithStoredProc(userDtos);
             return Ok();
         }
-        catch (Exception ex)
+        catch (Exception exception)
         {
-            Console.WriteLine($"Error updating users: {ex.Message}");
-            return StatusCode(500, "Error updating users");
+            return StatusCode(500, $"Error updating users: {exception.Message}");
         }
     }
 
 
     [HttpGet]
-    public async Task<ActionResult> GetUsers()
+    public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
     {
-        Console.WriteLine("Getting users...");
         try
         {
             var users = await _userService.GetUsers();
-            Console.WriteLine($"Got {users.Count()} users.");
+            var userActivities = await _userActivityService.GetUserActivitiesAsync();
 
-            var activities = await _userActivityService.GetUserActivitiesAsync();
-            Console.WriteLine($"Got {activities.Count()} user activities.");
-
-            var userDtos = users.Select(u => new UserDto
+            return Ok(users.Select(u => new UserDto
             {
                 Id = u.Id,
                 Username = u.Username,
-                IsActive = activities.FirstOrDefault(a => a.UserId == u.Id)?.IsActive ?? false
-            }).ToList();
-           Console.WriteLine("userDtos with details" + userDtos.Count() + " " + userDtos[1].Username + " " + userDtos[1].IsActive);
-           Console.WriteLine("get users successfully" + userDtos.Count());
-            return Ok(userDtos);
+                IsActive = userActivities.FirstOrDefault(a => a.UserId == u.Id)?.IsActive ?? false
+            }));
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error getting users: {ex.Message}");
             return StatusCode(500, "Error getting users");
         }
     }
