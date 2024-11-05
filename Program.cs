@@ -10,6 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserActivityService, UserActivityService>();
+builder.Services.AddScoped<IUserManager<User>,UserManagerFake>();
 builder.Services.AddCors(options =>
     {
     options.AddPolicy("AllowAll",
@@ -26,7 +27,7 @@ var configuration = new ConfigurationBuilder()
     .AddEnvironmentVariables()
     .Build();
 builder.Services.AddSingleton<IConfiguration>(configuration);
-builder.Services.AddScoped<IUserManager<User>,UserManagerFake>();
+
 
 builder.Services.AddAuthentication(options =>
     {

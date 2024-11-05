@@ -1,5 +1,7 @@
 // api.service.js
 import axios from 'axios';
+import store from '../store';
+//import router from '@/router';
 
 const api = axios.create({
   baseURL: 'http://localhost:5144/api/'
@@ -23,11 +25,21 @@ const userService = {
 
   async getUsers() {
     try {
+      
       console.log('getUsers');
-      const response = await api.get('/users');
+      const response = await api.get('/users',
+       {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'User': store.state.auth.username,
+            'UserId': store.state.auth.id
+          }}
+      );
       return response.data;
     } catch (error) {
-      console.error(error);
+     console.error(error);  
+     throw error;  
     }
   },
 

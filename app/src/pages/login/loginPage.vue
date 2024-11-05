@@ -40,6 +40,7 @@ export default {
                 // Login successful, redirect to /welcome
                 store.commit('SET_AUTH', {
                     isAuthenticated: true,
+                    id: user.id,
                     isActive: user.isActive,
                     username: user.username
                 });

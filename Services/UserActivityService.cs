@@ -29,7 +29,8 @@ public class UserActivityService : IUserActivityService
 
     public async Task<UserActivity> GetUserActivityAsync(int id)
     {
-        return await _context.UserActivities.FindAsync(id);
+      //  Console.WriteLine("UserActivityService: GetUserActivityAsync" +_context.UserActivities.FirstOrDefaultAsync(a => a.UserId == id));
+      return await _context.UserActivities.FirstOrDefaultAsync(a => a.UserId == id);
     }
 
     public async Task<UserActivity> CreateUserActivityAsync(UserActivity userActivity)

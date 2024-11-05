@@ -1,6 +1,7 @@
 <template>
   <div class="admin-page">
     <h1 class="title">Users Administration Page</h1>
+    <button  @click="getUsers" class="save-button">Update users</button>
     <div v-if="modifiedUsers.length > 0" class="notification-panel">
       <span class="notification-message">One or more users have been modified.</span>
       <button @click="saveModifiedUsers" class="save-button">Save Changes</button>
@@ -32,11 +33,12 @@
 </template>
 
 <script>
-import { ref, reactive } from 'vue';
+import { ref } from 'vue';
 import userService from '../../services/users.service';
+import router from '@/router';
 export default {
   setup() {
-    const users = reactive([]);
+    const users = ref([]);
     const showPanel = ref(false);
     const selectedUser = ref(null);
     const modifiedUsers = ref([]);
@@ -47,10 +49,14 @@ export default {
     };
 
     const getUsers = async () => {
-      const response = await userService.getUsers();
-      users.push(...response);
+     userService.getUsers().then((response) => {  
+      users.value = [];
+      users.value.push(...response); }).catch((error) => {
+        console.log(error);
+        router.push('/login');
+      });
     }
-    getUsers();
+ 
 
     const saveChanges = () => {
       addModifiedUser(selectedUser.value);
@@ -77,7 +83,8 @@ export default {
       showUserPanel,
       saveChanges,
       modifiedUsers,
-      saveModifiedUsers
+      saveModifiedUsers,
+      getUsers
     };
   },
 };

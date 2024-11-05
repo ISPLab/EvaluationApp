@@ -8,11 +8,13 @@ public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
     private readonly IUserActivityService _userActivityService;
+    private readonly IUserManager<User> _userManager;
 
-    public UsersController(IUserService userService, IUserActivityService userActivityService)
+    public UsersController(IUserService userService, IUserActivityService userActivityService, IUserManager<User> userManager)
     {
         _userService = userService;
         _userActivityService = userActivityService;
+        _userManager = userManager;
     }
 
     [HttpPost]
@@ -35,6 +37,19 @@ public class UsersController : ControllerBase
     {
         try
         {
+
+            var userIdHeader = HttpContext.Request.Headers["UserId"];
+            if (int.TryParse(userIdHeader.FirstOrDefault(), out int userId))
+            {
+                var activity = await _userActivityService.GetUserActivityAsync(userId);
+                if (activity.IsActive == false)
+                    return new ForbidResult();
+            }
+            else
+            {
+                return new BadRequestResult();
+            }
+
             var users = await _userService.GetUsers();
             var userActivities = await _userActivityService.GetUserActivitiesAsync();
 

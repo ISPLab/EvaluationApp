@@ -45,10 +45,12 @@ public interface IUserManager<TUser> where TUser : class
     Task<IdentityResult> RemoveClaimAsync(TUser user, Claim claim);
     Task<bool> CheckPasswordAsync(User user, string password);
     Task<string> GenerateUserTokenAsync(User user, string v1, string v2);
+
 }
 public class UserManagerFake : IUserManager<User>
 {
     private readonly AppDbContext _context;
+
     public UserManagerFake (AppDbContext context)
     {
         _context = context;
@@ -63,6 +65,8 @@ public class UserManagerFake : IUserManager<User>
     {
         throw new NotImplementedException();
     }
+
+ 
 
     public Task<bool> CheckPasswordAsync(User user, string password)
     {
